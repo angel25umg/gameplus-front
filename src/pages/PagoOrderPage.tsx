@@ -18,28 +18,35 @@ export const PagoOrderPage: React.FC = () => {
   const [showStripeForm, setShowStripeForm] = useState(false);
   const [stripePromise, setStripePromise] = useState<Promise<any> | null>(null);
 
-  // Initialize Stripe public key at runtime: prefer VITE var, fallback to backend /api/stripe/public-key
-  useEffect(() => {
-    const init = async () => {
-      const key = import.meta.env.VITE_STRIPE_PUBLIC_KEY as string | undefined;
-      try {
-        if (key) {
-          setStripePromise(loadStripe(key));
-          return;
-        }
-        const API_BASE = import.meta.env.VITE_API_URL || '/api';
-        const resp = await fetch(`${API_BASE}/stripe/public-key`);
-        if (!resp.ok) {
-          console.warn('Could not fetch stripe public key from server', resp.status);
-          return;
-        }
-        const data = await resp.json();
-        if (data?.publicKey) setStripePromise(loadStripe(data.publicKey));
-      } catch (e) {
-        console.warn('Error initializing stripe public key', e);
+  // Function to initialize Stripe public key at runtime. Returns true if initialized.
+  const initStripe = async (): Promise<boolean> => {
+    const key = import.meta.env.VITE_STRIPE_PUBLIC_KEY as string | undefined;
+    try {
+      if (key) {
+        setStripePromise(loadStripe(key));
+        return true;
       }
-    };
-    init();
+      const API_BASE = import.meta.env.VITE_API_URL || '/api';
+      const resp = await fetch(`${API_BASE}/stripe/public-key`);
+      if (!resp.ok) {
+        console.warn('Could not fetch stripe public key from server', resp.status);
+        return false;
+      }
+      const data = await resp.json();
+      if (data?.publicKey) {
+        setStripePromise(loadStripe(data.publicKey));
+        return true;
+      }
+      return false;
+    } catch (e) {
+      console.warn('Error initializing stripe public key', e);
+      return false;
+    }
+  };
+
+  // Try to initialize on mount so the key is fetched early
+  useEffect(() => {
+    initStripe();
   }, []);
 
   useEffect(() => {
@@ -86,7 +93,18 @@ export const PagoOrderPage: React.FC = () => {
         return;
       }
       if (method === 'STRIPE') {
-        // Show stripe form UI to complete payment (user will confirm card)
+        // Ensure Stripe is initialized before showing the form. If not initialized,
+        // try to initialize (fetch public key). Show an error if it fails.
+        if (!stripePromise) {
+          const ok = await initStripe();
+          setLoading(false);
+          if (!ok) {
+            setError('No se pudo inicializar Stripe. Revisa la consola o la configuración de VITE_API_URL/VITE_STRIPE_PUBLIC_KEY.');
+            return;
+          }
+          setShowStripeForm(true);
+          return;
+        }
         setShowStripeForm(true);
         setLoading(false);
         return;
