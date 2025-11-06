@@ -33,9 +33,11 @@ export const FacturaPage: React.FC = () => {
       <Box sx={{ mt: 2 }}>
         <Typography variant="h6">Detalles</Typography>
         <ul>
-          {(factura.detalles || []).map((d: any, i: number) => (
-            <li key={i}>{d.videojuegoId} — {d.cantidad} x ${d.subtotal}</li>
-          ))}
+          {(factura.detalles || []).map((d: any, i: number) => {
+            const titulo = d.titulo || d.videojuego?.titulo || d.videojuegoId || '—';
+            const subtotal = Number(d.subtotal ?? d.total ?? 0).toFixed(2);
+            return <li key={i}>{titulo} — {d.cantidad} x ${subtotal}</li>;
+          })}
         </ul>
         <Typography variant="h6">Monto: ${factura.monto}</Typography>
       </Box>

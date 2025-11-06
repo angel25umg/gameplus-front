@@ -135,12 +135,18 @@ export const PagoOrderPage: React.FC = () => {
         <Box>
           <Button variant="outlined" onClick={refreshPedido} sx={{ mb: 2 }}>Refrescar pedido</Button>
           <Typography>Pedido ID: {pedido.id}</Typography>
-          <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 2 }}>
             <Typography variant="h6">Items</Typography>
             <ul>
-              {(pedido.detallePedidos || pedido.detalles || []).map((d: any) => (
-                <li key={d.id || `${d.videojuegoId}-${d.cantidad}`}>{d.videojuegoId} — {d.cantidad} x ${d.subtotal}</li>
-              ))}
+              {(pedido.detallePedidos || pedido.detalles || []).map((d: any) => {
+                const titulo = d.videojuego?.titulo || d.videojuegoId || '—';
+                const precio = d.subtotal ?? d.total ?? 0;
+                return (
+                  <li key={d.id || `${d.videojuegoId}-${d.cantidad}`}>
+                    {titulo} — {d.cantidad} x ${Number(precio).toFixed(2)}
+                  </li>
+                );
+              })}
             </ul>
             <Typography variant="h6">Total: ${getTotal().toFixed(2)}</Typography>
           </Box>
