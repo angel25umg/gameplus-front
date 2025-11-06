@@ -136,7 +136,7 @@ export const PagoOrderPage: React.FC = () => {
           <Button variant="outlined" onClick={refreshPedido} sx={{ mb: 2 }}>Refrescar pedido</Button>
           <Typography>Pedido ID: {pedido.id}</Typography>
             <Box sx={{ mt: 2 }}>
-            <Typography variant="h6">Items</Typography>
+            <Typography variant="h6">Info</Typography>
             <ul>
               {(pedido.detallePedidos || pedido.detalles || []).map((d: any) => {
                 const titulo = d.videojuego?.titulo || d.videojuegoId || '—';
