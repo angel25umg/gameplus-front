@@ -22,3 +22,4 @@ const API_BASE = `${import.meta.env.VITE_API_URL}/pedidos`;
 
 export const getPedidos = () => axios.get<Pedido[]>(API_BASE);
 export const getPedido = (id: number) => axios.get<Pedido>(`${API_BASE}/${id}`);
+export const getPedidosByCliente = (clienteId?: number | string) => axios.get<Pedido[]>(API_BASE, { params: { clienteId } });

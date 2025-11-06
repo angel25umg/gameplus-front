@@ -8,7 +8,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PaymentIcon from '@mui/icons-material/Payment';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 // ...existing code...
@@ -25,7 +24,7 @@ const menuItemsEmpleado = [
   { text: 'Empleados', icon: <PeopleIcon />, path: '/empleados' },
   { text: 'Productos', icon: <ShoppingCartIcon />, path: '/productos' },
   { text: 'Proveedores', icon: <StoreIcon />, path: '/proveedores' },
-  { text: 'Pagos', icon: <PaymentIcon />, path: '/pagos' },
+  //{ text: 'Pagos', icon: <PaymentIcon />, path: '/pagos' },
   { text: 'Pedidos', icon: <ReceiptLongIcon />, path: '/pedidos' },
   { text: 'Reportes', icon: <AssessmentIcon />, path: '/reportes' },
 ];
@@ -33,6 +32,7 @@ const menuItemsEmpleado = [
 const menuItemsCliente = [
   { text: 'Catálogo', icon: <StoreIcon />, path: '/catalogo' },
   { text: 'Carrito', icon: <ShoppingCartIcon />, path: '/carrito' },
+  { text: 'Mis Pedidos', icon: <ReceiptLongIcon />, path: '/mis-pedidos' },
   // Aquí puedes agregar más opciones específicas para clientes si lo deseas
 ];
 

@@ -5,7 +5,7 @@ export interface Pago {
   pedidoId: number;
   metodo: 'STRIPE' | 'PAYPAL';
   monto: number;
-  factura_digital?: string;
+  createdAt?: string;
 }
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/pagos`;

@@ -1,5 +1,5 @@
 import { CatalogoPage } from './pages/CatalogoPage';
-import { VentaTest } from './components/VentaTest';
+
 // src/App.tsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './auth/AuthContext';
@@ -13,12 +13,13 @@ import { EmpleadoPage } from './pages/EmpleadoPage';
 
 
 import { ReporteriaPage } from './pages/ReporteriaPage';
-import { PagoPage } from './pages/PagoPage';
+
 import PagoOrderPage from './pages/PagoOrderPage';
 import FacturaPage from './pages/FacturaPage';
 import { CarritoPage } from './pages/CarritoPage';
 import { TableroPage } from './pages/TableroPage';
 import PedidosPage from './pages/PedidosPage';
+import ClientePedidosPage from './pages/ClientePedidosPage';
 
 function App() {
   return (
@@ -42,14 +43,15 @@ function App() {
               <Route path="proveedores" element={<ProveedorPage />} />
               <Route path="pedidos" element={<PedidosPage />} />
               <Route path="pedidos/:id" element={<PedidosPage />} />
+              <Route path="mis-pedidos" element={<ClientePedidosPage />} />
            
               <Route path="catalogo" element={<CatalogoPage />} />
               <Route path="carrito" element={<CarritoPage />} />
               <Route path="pago-order" element={<PagoOrderPage />} />
               <Route path="factura/:id" element={<FacturaPage />} />
               <Route path="reportes" element={<ReporteriaPage />} />
-              <Route path="pagos" element={<PagoPage />} />
-              <Route path="venta-test" element={<VentaTest />} />
+             
+             
             </Route>
           </Route>
           

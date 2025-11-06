@@ -1,6 +1,9 @@
-import { Button, TextField, Container, Box, Typography, CssBaseline, Paper, Alert } from '@mui/material';
+import { Button, TextField, Container, Box, Typography, CssBaseline, Paper, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Snackbar } from '@mui/material';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ClienteForm } from '../components/ClienteForm';
+import { createCliente, type Cliente } from '../services/clienteApi';
 import axios from 'axios';
 import { useAuth } from '../auth/AuthContext';
 
@@ -13,6 +16,8 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [openCreate, setOpenCreate] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState<string | null>(null);
 
   const loginEmpleado = async () => {
     const res = await axios.post(`${API}/empleados/login`, { correo, password });
@@ -56,6 +61,23 @@ export const LoginPage = () => {
         const msg = e1?.response?.data?.message || 'No se pudo iniciar sesión';
         setError(msg);
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenCreate = () => setOpenCreate(true);
+  const handleCloseCreate = () => setOpenCreate(false);
+
+  const handleCreateCliente = async (data: Cliente) => {
+    try {
+      setLoading(true);
+      await createCliente(data);
+      setSnackbarMsg('Cuenta creada correctamente. Puedes iniciar sesión.');
+      handleCloseCreate();
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || 'Error al crear cliente';
+      setSnackbarMsg(msg);
     } finally {
       setLoading(false);
     }
@@ -129,6 +151,22 @@ export const LoginPage = () => {
           {error && <Alert severity="error">{error}</Alert>}
         </Box>
       </Paper>
+      {/* Botón flotante para crear cuenta */}
+      <Fab color="primary" aria-label="crear-cuenta" onClick={handleOpenCreate} sx={{ position: 'fixed', right: 16, bottom: 16 }}>
+        <PersonAddIcon />
+      </Fab>
+
+      <Dialog open={openCreate} onClose={handleCloseCreate}>
+        <DialogTitle>Crear Cuenta</DialogTitle>
+        <DialogContent>
+          <ClienteForm onSubmit={handleCreateCliente} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseCreate}>Cancelar</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar open={!!snackbarMsg} autoHideDuration={4000} onClose={() => setSnackbarMsg(null)} message={snackbarMsg} />
     </Container>
   );
 };

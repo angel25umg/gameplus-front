@@ -83,7 +83,7 @@ export const ProductoPage = () => {
       renderCell: (params: any) => (params.value != null ? `$${params.value}` : ''),
     },
     { field: 'existencias', headerName: 'Existencias', width: 120 },
-    { field: 'licencias_digitales', headerName: 'Licencias', width: 110 },
+  
     {
       field: 'actions',
       type: 'actions',

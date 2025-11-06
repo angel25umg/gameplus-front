@@ -25,16 +25,22 @@ export const ReporteriaPage = () => {
           setVentas([]);
         }
       }).catch(() => setError('Error al cargar ventas mensuales')).finally(() => setLoading(false));
-    } else {
-      getTopClientes().then(r => {
-        if (Array.isArray(r.data)) {
-          setClientes(r.data);
-        } else if (r.data) {
-          setClientes([r.data]);
-        } else {
-          setClientes([]);
-        }
-      }).catch(() => setError('Error al cargar top clientes')).finally(() => setLoading(false));
+      } else {
+      getTopClientes()
+        .then(r => {
+          const data = Array.isArray(r.data) ? r.data : r.data ? [r.data] : [];
+          const normalized = data.map((c, idx) => ({
+            // crea la propiedad en minúsculas que espera tu Grid
+            clienteid: (c as any).clienteId ?? c.clienteid ?? (c as any).id ?? idx,
+            nombre: c.nombre,
+            apellido: c.apellido,
+            correo: c.correo,
+            total_compras: Number(c.total_compras ?? 0),
+          }));
+          setClientes(normalized);
+        })
+        .catch(() => setError('Error al cargar top clientes'))
+        .finally(() => setLoading(false));
     }
   }, [tab]);
 

@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { getPedidos } from '../services/pedidoApi';
-import type { Pedido } from '../services/pedidoApi';
+import { getPagos } from '../services/pagoApi';
+import type { Pago } from '../services/pagoApi';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, Typography, CircularProgress, Button
+  Paper, Typography, CircularProgress
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+
 
 const PedidosPage: React.FC = () => {
-  const [pedidos, setPedidos] = useState<Pedido[]>([]);
+  const [pagos, setPagos] = useState<Pago[]>([]);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    setLoading(true);
-    getPedidos()
-      .then(res => setPedidos(res.data || []))
-      .catch(err => console.error('Error fetching pedidos', err))
-      .finally(() => setLoading(false));
-  }, []);
+ useEffect(() => {
+  setLoading(true);
+  getPagos()
+    .then(res => {
+      const data = res.data || [];
+      data.sort((a, b) => (new Date(b.createdAt || 0).getTime()) - (new Date(a.createdAt || 0).getTime()));
+      setPagos(data);
+    })
+    .catch(err => console.error('Error fetching pagos', err))
+    .finally(() => setLoading(false));
+}, []);
 
-  const handleVer = (id?: number) => {
-    if (!id) return;
-    navigate(`/pedidos/${id}`);
-  };
+  
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>Pedidos</Typography>
+      <Typography variant="h4" gutterBottom>Pagos</Typography>
       {loading ? (
         <CircularProgress />
       ) : (
@@ -36,25 +36,23 @@ const PedidosPage: React.FC = () => {
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>ClienteId</TableCell>
+                <TableCell>PedidoId</TableCell>
+                <TableCell>Método</TableCell>
+                <TableCell>Monto</TableCell>
                 <TableCell>Fecha</TableCell>
-                <TableCell>Tipo Entrega</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Items</TableCell>
-                <TableCell>Acciones</TableCell>
+               
               </TableRow>
             </TableHead>
             <TableBody>
-              {pedidos.map((p) => (
+              {pagos.map((p) => (
                 <TableRow key={p.id}>
                   <TableCell>{p.id}</TableCell>
-                  <TableCell>{p.clienteId}</TableCell>
-                  <TableCell>{p.fecha ? new Date(p.fecha).toLocaleString() : '-'}</TableCell>
-                  <TableCell>{p.tipo_entrega}</TableCell>
-                  <TableCell>{p.estado}</TableCell>
-                  <TableCell>{p.detalles ? p.detalles.length : 0}</TableCell>
+                  <TableCell>{p.pedidoId}</TableCell>
+                  <TableCell>{p.metodo}</TableCell>
+                  <TableCell>${Number(p.monto).toFixed(2)}</TableCell>
+                  <TableCell>{p.createdAt ? new Date(p.createdAt).toLocaleString() : '-'}</TableCell>
                   <TableCell>
-                    <Button size="small" onClick={() => handleVer(p.id)}>Ver</Button>
+                    
                   </TableCell>
                 </TableRow>
               ))}
