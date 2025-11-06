@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = '/api';
+// Use Vite env var when available so requests go to the configured backend
+// in development or production builds. Fallback to relative '/api' to
+// preserve behavior when VITE_API_URL is not set.
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 
 // Tipos para los parámetros
