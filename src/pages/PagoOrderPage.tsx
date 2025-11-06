@@ -27,9 +27,10 @@ export const PagoOrderPage: React.FC = () => {
           setStripePromise(loadStripe(key));
           return;
         }
-        const resp = await fetch('/api/stripe/public-key');
+        const API_BASE = import.meta.env.VITE_API_URL || '/api';
+        const resp = await fetch(`${API_BASE}/stripe/public-key`);
         if (!resp.ok) {
-          console.warn('Could not fetch stripe public key from server');
+          console.warn('Could not fetch stripe public key from server', resp.status);
           return;
         }
         const data = await resp.json();
@@ -132,7 +133,7 @@ export const PagoOrderPage: React.FC = () => {
               <FormControlLabel value="PAYPAL" control={<Radio />} label="PayPal / Otro" />
             </RadioGroup>
             <Button variant="contained" onClick={handlePay} sx={{ mt: 1 }} disabled={loading}>Pagar</Button>
-            {showStripeForm && (
+            {showStripeForm && stripePromise && (
               <Box sx={{ mt: 2 }}>
                 <Elements stripe={stripePromise}>
                   <StripeCheckout
