@@ -4,10 +4,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ClienteForm } from '../components/ClienteForm';
 import { createCliente, type Cliente } from '../services/clienteApi';
-import axios from 'axios';
+import api from '../services/apiClient';
 import { useAuth } from '../auth/AuthContext';
 
-const API = import.meta.env.VITE_API_URL as string;
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -20,7 +19,7 @@ export const LoginPage = () => {
   const [snackbarMsg, setSnackbarMsg] = useState<string | null>(null);
 
   const loginEmpleado = async () => {
-    const res = await axios.post(`${API}/empleados/login`, { correo, password });
+    const res = await api.post(`/empleados/login`, { correo, password });
     const user = res.data?.empleado;
     localStorage.setItem('isAuth', 'true');
     localStorage.setItem('role', 'empleado');
@@ -28,7 +27,7 @@ export const LoginPage = () => {
   };
 
   const loginCliente = async () => {
-    const res = await axios.post(`${API}/clientes/login`, { correo, password });
+    const res = await api.post(`/clientes/login`, { correo, password });
     const user = res.data?.cliente;
     localStorage.setItem('isAuth', 'true');
     localStorage.setItem('role', 'cliente');
@@ -54,11 +53,11 @@ export const LoginPage = () => {
           login();
           navigate('/catalogo');
         } catch (e2: any) {
-          const msg = e2?.response?.data?.message || 'Credenciales inválidas';
+          const msg = e2?.response?.data?.message || (e2?.code === 'ECONNABORTED' ? 'El servidor tardó en responder. Intenta de nuevo.' : 'Credenciales inválidas');
           setError(msg);
         }
       } else {
-        const msg = e1?.response?.data?.message || 'No se pudo iniciar sesión';
+        const msg = e1?.response?.data?.message || (e1?.code === 'ECONNABORTED' ? 'El servidor tardó en responder. Intenta de nuevo.' : 'No se pudo iniciar sesión');
         setError(msg);
       }
     } finally {
