@@ -52,7 +52,7 @@ export const LoginPage = () => {
         try {
           await loginCliente();
           login();
-          navigate('/cliente-dashboard');
+          navigate('/catalogo');
         } catch (e2: any) {
           const msg = e2?.response?.data?.message || 'Credenciales inválidas';
           setError(msg);
